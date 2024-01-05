@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+sudo rm /opt/cellframe-node/var/lib/network/ -rf

@@ -4,7 +4,6 @@ import importlib
 from pathlib import Path
 
 try:
-    # from pycfhelpers.cellframenet import CellframeNetwork
     from pycfhelpers.cfnet_struct import CFNet
 except ImportError:
     pass

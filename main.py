@@ -2,12 +2,12 @@ from fastapi import FastAPI
 import warnings
 import sqlalchemy
 
-from back.core.const import (
+from core.const import (
     OPEN_API_DESCRIPTION,
     OPEN_API_TITLE,
 )
-from back import endpoints
-from back.version import __version__
+import endpoints
+from core.version import __version__
 
 # FIXME: fix warnings
 warnings.filterwarnings("ignore", category=sqlalchemy.exc.SAWarning)

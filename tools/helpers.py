@@ -2,8 +2,6 @@ import base58
 import hashlib
 from typing import Any
 from pydantic import BaseModel, TypeAdapter
-# from schemas.sign import *
-
 
 
 def parse_cf_v1_address(address: str) -> tuple[int, int, int, bytes, bytes, bytes]:
@@ -19,6 +17,7 @@ def parse_cf_v1_address(address: str) -> tuple[int, int, int, bytes, bytes, byte
     if summary_hash != control_hash:
         raise ValueError(f"Address={address} not valid")
     return version, net_id, sign_id, public_hash, summary_hash, control_hash
+
 
 def to_dict(objects: list[Any], schema: type[BaseModel]) -> list[dict]:
     adapter = TypeAdapter(list[schema])

@@ -1,0 +1,21 @@
+#!/bin/sh -e
+
+current_directory=$(pwd)
+directory_name=$(basename "$current_directory")
+path_to_plugin="/opt/cellframe-node/var/lib/plugins/$directory_name"
+
+if [ ! -d  "$path_to_plugin" ]; then
+    sudo mkdir "$path_to_plugin"
+    echo "Directory \"$path_to_plugin\" not exist."
+else
+    echo "Directory \"$path_to_plugin\" already exist."
+fi
+
+command_to_execute="sudo mount ./ $path_to_plugin -obind"
+if output=$($command_to_execute 2>&1); then
+    echo "Directory \"$current_directory\" successfully mounted."
+else
+    exit_code=$?
+    echo "An error occurred while executing the command. Return code: $exit_code"
+    echo "$output"
+fi

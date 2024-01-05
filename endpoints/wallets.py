@@ -1,14 +1,11 @@
 import json
-
-from back import storage
-from back import schemas
-
 from starlette.datastructures import QueryParams
 from sqlalchemy.orm import Session
-
 from fastapi.exceptions import HTTPException
 
-from back.schemas import valid_wallet_address
+import storage
+from schemas import serializers
+from schemas.validators import valid_wallet_address
 
 
 # hhttp.add("w_addr", walletInfo)
@@ -30,17 +27,6 @@ def get_wallet(query: QueryParams, session: Session):
     wallet = storage.wallet.get_wallet_by_address(session, address)
     if wallet is None:
         raise HTTPException(status_code=404, detail=f"Wallet with address={address} not found")
-    wallet_schema = schemas.Wallet.model_validate(wallet)
+    wallet_schema = serializers.Wallet.model_validate(wallet)
     return wallet_schema.model_dump_json(indent=4)
 
-# def get_info(query: QueryParams, session: Session):
-#     print(f"get info {query=}")
-#     return {"handler": "get_info", "query": query}
-#
-#
-# def get_net_by_id(query: QueryParams, session: Session):
-#     net_id = query["net_id"]
-#     net_db: models.Net = session.scalar(select(models.Net).where(models.Net.id == net_id))
-#     if net_db is None:
-#         raise HTTPException(status_code=404, detail=f"Net with id={net_id} not found")
-#     return {"id": net_db.id, "name": net_db.name}

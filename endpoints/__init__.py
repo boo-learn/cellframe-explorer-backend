@@ -14,16 +14,16 @@ from fastapi.exceptions import HTTPException
 from starlette.datastructures import QueryParams
 from sqlalchemy.orm import Session
 
-from back.core.const import (
+from core.const import (
     EXPLORER_URL,
     EXPLORER_TAGS
 )
 
-from back.endpoints import (
+from endpoints import (
     wallets, dags, transactions, blocks
 )
 
-from back.core import depends
+from core import depends
 
 router = APIRouter(prefix="/expl", tags=EXPLORER_TAGS)
 

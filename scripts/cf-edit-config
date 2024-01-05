@@ -1,0 +1,3 @@
+#!/bin/sh -e
+
+sudo nano /opt/cellframe-node/etc/cellframe-node.cfg

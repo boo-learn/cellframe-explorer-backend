@@ -10,18 +10,20 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=utf-8
 
-COPY back/requirements.txt/ /tmp/requirements.txt
+COPY requirements.txt/ /tmp/requirements.txt
 
 RUN pip install -U pip && \
     pip install --no-cache-dir -r /tmp/requirements.txt
 
-# Copy the news_collection_service folder into the container at /app
-COPY ./shared /app/shared
-# COPY ./pycfhelpers /app/pycfhelpers
-#COPY ./back /app/back
-COPY ./config.py    /app/config.py
-COPY ./logger.py /app/logger.py
-COPY ./Fakes /app/Fakes
+# Copy all into the container at /app
+COPY ./core  /app/core
+COPY ./fakes  /app/fakes
+COPY ./shared  /app/shared
+#COPY ./storage  /app/storage
+COPY ./tools  /app/tools
+COPY config.py  /app/config.py
+COPY logger.py  /app/logger.py
+COPY main.py  /app/main.py
 
 EXPOSE 80
 
@@ -32,4 +34,4 @@ WORKDIR /app
 
 #RUN chmod a+x back/scripts/*
 #CMD back/scripts/start_service.sh
-CMD ["uvicorn", "back.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

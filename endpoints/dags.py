@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from fastapi.exceptions import HTTPException
 
 from shared.types import ChainTypes
-from back import schemas
-from back import storage
+from schemas import serializers
+import storage
 
 
 # hhttp.add("dagListCount", workDag.http_handler_dag_list_count)
@@ -22,7 +22,7 @@ def dag_list_count(query: QueryParams, session: Session):
     chain = storage.chain.get_chain(session, net_name, chain_name)
     if chain is None:
         raise HTTPException(status_code=404, detail=f"Chain with name={chain_name} in net={net_name} not found")
-    chain_schema = schemas.Chain.model_validate(chain)
+    chain_schema = serializers.Chain.model_validate(chain)
     # print(f"{chain_schema=}")
     return chain_schema.model_dump_json(indent=4)
 
@@ -67,7 +67,7 @@ def dag_list_limited(query: QueryParams, session: Session):
         raise TypeError
     atoms = current_storage(session, net_name, chain_name, limit=limit, offset=offset, reverse=reverse)
     db_chain.atoms = atoms
-    chain_schema = schemas.ChaiWithAtoms.model_validate(db_chain)
+    chain_schema = serializers.ChaiWithAtoms.model_validate(db_chain)
     return chain_schema.model_dump_json(indent=4)
 
 
@@ -95,6 +95,6 @@ def dag_info(query: QueryParams, session: Session):
         raise HTTPException(status_code=404, detail=f"Event with hash ={hash} not found")
     # print(f"{db_event.version=}")
     # print(f"{type(db_event.version)=}")
-    event_schema = schemas.Event.model_validate(db_event)
+    event_schema = serializers.Event.model_validate(db_event)
     return event_schema.model_dump_json(indent=4)
 
