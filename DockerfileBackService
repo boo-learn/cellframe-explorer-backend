@@ -25,7 +25,7 @@ COPY config.py  /app/config.py
 COPY logger.py  /app/logger.py
 COPY main.py  /app/main.py
 
-EXPOSE 80
+EXPOSE 8000
 
 # Define environment variable
 ENV PYTHONPATH "${PYTHONPATH}:/app"
