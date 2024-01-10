@@ -7,6 +7,7 @@ variables:
   VERSION: $CI_COMMIT_REF_SLUG
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_SUBMODULE_UPDATE_FLAGS: --force
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
 
 .docker_login:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
