@@ -5,6 +5,8 @@ variables:
   BUILD_SERVICE: "docker:25-rc-dind"
   DOCKER_IMAGE: "docker:latest"
   VERSION: $CI_COMMIT_REF_SLUG
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --force
 
 .docker_login:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
