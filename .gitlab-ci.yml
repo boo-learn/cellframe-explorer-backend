@@ -54,12 +54,10 @@ deploy:service:
   stage: deploy
   variables:
     SERVICES: db back_service
-    APP_PATH: "/opt/explorer_backend"
   before_script:
     - !reference [ .ssh_connection_prepare ]
     - !reference [.set_docker_context ]
     - !reference [.docker_login]
-    - cd $APP_PATH
     - cp .env.dev.example .env
     - cp docker-compose-ci.yml docker-compose.yml
   script:
