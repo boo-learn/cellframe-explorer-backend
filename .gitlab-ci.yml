@@ -1,5 +1,6 @@
 stages:
   - build
+  - deploy
 
 variables:
   BUILD_SERVICE: "docker:25-rc-dind"
@@ -28,3 +29,23 @@ build:image:
     - docker
   rules:
     - if: $CI_COMMIT_REF_NAME == "master"
+
+deploy:service:
+  stage: deploy
+  variables:
+    SERVICES: db back_service
+    APP_PATH: "/opt/explorer_backend"
+  before_script:
+    - !reference [ .ssh_connection_prepare ]
+    - !reference [.set_docker_context ]
+    - !reference [.docker_login]
+    - cd $APP_PATH
+    - cp .env.dev.example .env
+  script:
+    - docker-compose pull $SERVICES
+    - docker-compose stop $SERVICES
+    - docker-compose --env-file .env  up -d $SERVICES
+    - docker image prune -af
+  needs: ["build:image"]
+  tags:
+    - docker
