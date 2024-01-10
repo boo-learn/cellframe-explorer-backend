@@ -5,6 +5,7 @@ variables:
   BUILD_SERVICE: "docker:25-rc-dind"
   DOCKER_IMAGE: "docker:latest"
   VERSION: $CI_COMMIT_REF_SLUG
+  GIT_STRATEGY: clone
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_SUBMODULE_UPDATE_FLAGS: --force
   GIT_SUBMODULE_FORCE_HTTPS: "true"
@@ -20,9 +21,6 @@ build:image:
   before_script:
     - !reference [.docker_login]
   script:
-    - apk update
-    - apk --no-cache add git
-    - git submodule update --init --recursive
     - docker build --no-cache --file DockerfileBackService -t $CI_REGISTRY_IMAGE/explorer_backend:${VERSION} .
     - docker push $CI_REGISTRY_IMAGE/explorer_backend:${VERSION}
     - docker rmi $CI_REGISTRY_IMAGE/explorer_backend:${VERSION}
