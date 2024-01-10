@@ -1,0 +1,29 @@
+stages:
+  - build
+
+variables:
+  BUILD_SERVICE: "docker:25-rc-dind"
+  DOCKER_IMAGE: "docker:latest"
+  VERSION: $CI_COMMIT_REF_SLUG
+
+.docker_login:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+build:image:
+  stage: build
+  image: ${DOCKER_IMAGE}
+  services:
+    - ${BUILD_SERVICE}
+  before_script:
+    - !reference [.docker_login]
+  script:
+    - apk update
+    - apk --no-cache add git
+    - git submodule update --init --recursive
+    - docker build --no-cache --file DockerfileBackService -t $CI_REGISTRY_IMAGE/explorer_backend:${VERSION} .
+    - docker push $CI_REGISTRY_IMAGE/explorer_backend:${VERSION}
+    - docker rmi $CI_REGISTRY_IMAGE/explorer_backend:${VERSION}
+  tags:
+    - docker
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
