@@ -14,6 +14,26 @@ variables:
 .docker_login:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
+.ssh_connection_prepare:
+  - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
+  - eval $(ssh-agent -s)
+  - chmod 600 $SSH_PRIVATE_KEY
+  - ssh-add $SSH_PRIVATE_KEY
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan $VM_IPADDRESS >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+.set_docker_context:
+  - unset DOCKER_HOST # DOCKER_HOST variable could overwrites docker context, so unsetting it
+  - chmod 400 $SSH_PRIVATE_KEY # Set the right permission for the key file
+  - eval "$(ssh-agent -s)" # Running ssh-agent
+  - ssh-add $SSH_PRIVATE_KEY # Adding the key to the agent
+  - echo "CHECKING IF KEY WAS ADDED" && ssh-add -l # Checking key was added correctly
+  - echo "StrictHostKeyChecking no" >> $(find /etc -iname ssh_config) # Avoiding host check by changing the global configuration of ssh client
+  - docker context create remote --docker "host=ssh://${SSH_USER}@${VM_IPADDRESS}" # Creating the new ssh context
+  - docker context use remote
+
 build:image:
   stage: build
   image: ${DOCKER_IMAGE}
