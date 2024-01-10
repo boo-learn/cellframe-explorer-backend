@@ -61,6 +61,7 @@ deploy:service:
     - !reference [.docker_login]
     - cd $APP_PATH
     - cp .env.dev.example .env
+    - cp docker-compose-ci.yml docker-compose.yml
   script:
     - docker-compose pull $SERVICES
     - docker-compose stop $SERVICES
