@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: always
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+      interval: 5s
+      timeout: 20s
+      retries: 5
+
+  back_service:
+    image: gitlab.demlabs.net:5050/dap.support/cellframe-node-explorer-backend/explorer_backend:master
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: always
+    depends_on:
+      - db
+
+#  pgadmin:
+#    image: dpage/pgadmin4:latest
+#    env_file:
+#      - .env.dev
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      db:
+#        condition: service_healthy
+
+volumes:
+  postgres_data:

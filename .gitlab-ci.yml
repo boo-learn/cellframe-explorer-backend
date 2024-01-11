@@ -1,0 +1,73 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  BUILD_SERVICE: "docker:25-rc-dind"
+  DOCKER_IMAGE: "docker:latest"
+  VERSION: $CI_COMMIT_REF_SLUG
+  GIT_STRATEGY: clone
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_UPDATE_FLAGS: --force
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+
+.docker_login:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+.ssh_connection_prepare:
+  - 'command -v ssh-agent >/dev/null || ( apk add --update openssh )' 
+  - eval $(ssh-agent -s)
+  - chmod 600 $SSH_PRIVATE_KEY
+  - ssh-add $SSH_PRIVATE_KEY
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan $VM_IPADDRESS >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+.set_docker_context:
+  - unset DOCKER_HOST # DOCKER_HOST variable could overwrites docker context, so unsetting it
+  - chmod 400 $SSH_PRIVATE_KEY # Set the right permission for the key file
+  - eval "$(ssh-agent -s)" # Running ssh-agent
+  - ssh-add $SSH_PRIVATE_KEY # Adding the key to the agent
+  - echo "CHECKING IF KEY WAS ADDED" && ssh-add -l # Checking key was added correctly
+  - echo "StrictHostKeyChecking no" >> $(find /etc -iname ssh_config) # Avoiding host check by changing the global configuration of ssh client
+  - docker context create remote --docker "host=ssh://${SSH_USER}@${VM_IPADDRESS}" # Creating the new ssh context
+  - docker context use remote
+
+build:image:
+  stage: build
+  image: ${DOCKER_IMAGE}
+  services:
+    - ${BUILD_SERVICE}
+  before_script:
+    - !reference [.docker_login]
+  script:
+    - docker build --no-cache --file DockerfileBackService -t $CI_REGISTRY_IMAGE/explorer_backend:${VERSION} .
+    - docker push $CI_REGISTRY_IMAGE/explorer_backend:${VERSION}
+    - docker rmi $CI_REGISTRY_IMAGE/explorer_backend:${VERSION}
+  tags:
+    - docker
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
+
+deploy:service:
+  stage: deploy
+  variables:
+    SERVICES: back_service
+  before_script:
+    - !reference [ .ssh_connection_prepare ]
+    - !reference [.set_docker_context ]
+    - !reference [.docker_login]
+    - cp -f ${ENV_FILE}  .env
+    - cp docker-compose-ci.yml docker-compose.yml
+    - scp .env ${SSH_USER}@${VM_IPADDRESS}:~/
+    - ssh ${SSH_USER}@${VM_IPADDRESS} 'sudo cp ~/.env /opt/cellframe-node/etc/plugins/cellframe-node-blockchain-replicator-plugin/.env.local'
+    - ssh ${SSH_USER}@${VM_IPADDRESS} 'rm ~/.env'
+  script:
+    - docker-compose pull $SERVICES
+    - docker-compose stop $SERVICES
+    - docker-compose --env-file .env up -d $SERVICES
+    - docker image prune -af
+  needs: ["build:image"]
+  tags:
+    - docker
