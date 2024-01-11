@@ -1,3 +1,0 @@
-#!/bin/sh -e
-
-/opt/cellframe-node/python/bin/python3.10 tmp/benches/callback_bench.py "$1"
