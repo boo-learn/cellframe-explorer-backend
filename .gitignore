@@ -70,3 +70,4 @@ vscode/
 ### Temp directories
 tmp/*
 profiler*
+*_tmp/*

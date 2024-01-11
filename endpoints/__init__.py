@@ -43,7 +43,7 @@ def get_query_handler(query: QueryParams, session: Session):
         "tx": transactions.get_datum_tx,
         # "txValidation": txs.tx_validation,
         "blockListLimited": blocks.block_list,
-        "blockListCount": dags.dag_list_count, # Yes, It's duplicate
+        "blockListCount": dags.dag_list_count,  # Yes, It's duplicate
         "block": blocks.get_block,
     }
     try:
@@ -57,3 +57,8 @@ def get_query_handler(query: QueryParams, session: Session):
 def entry_point(request: Request, session: Session = Depends(depends.sync_db_session)):
     query = request.query_params
     return Response(content=get_query_handler(query, session), media_type="json")
+
+
+@router.options("")
+def all_options():
+    return Response(status_code=204)
