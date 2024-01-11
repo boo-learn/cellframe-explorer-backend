@@ -20,10 +20,6 @@ services:
     image: gitlab.demlabs.net:5050/dap.support/cellframe-node-explorer-backend/explorer_backend:master
     env_file:
       - .env
-    volumes:
-      - ./endpoints:/app/endpoints
-      - ./schemas:/app/schemas
-      - ./storage:/app/storage
     ports:
       - "127.0.0.1:8000:8000"
     restart: always
