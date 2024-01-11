@@ -61,9 +61,8 @@ deploy:service:
     - cp -f ${ENV_FILE}  .env
     - cp docker-compose-ci.yml docker-compose.yml
     - scp .env ${SSH_USER}@${VM_IPADDRESS}:~/
-    - ssh ${SSH_USER}@${VM_IPADDRESS} \
-      'sudo cp ~/.env /opt/cellframe-node/etc/plugins/cellframe-node-blockchain-replicator-plugin/.env.local' ; \
-      'rm ~/.env'
+    - ssh ${SSH_USER}@${VM_IPADDRESS} 'sudo cp ~/.env /opt/cellframe-node/etc/plugins/cellframe-node-blockchain-replicator-plugin/.env.local'
+    - ssh ${SSH_USER}@${VM_IPADDRESS} 'rm ~/.env'
   script:
     - docker-compose pull $SERVICES
     - docker-compose stop $SERVICES
