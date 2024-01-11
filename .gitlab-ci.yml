@@ -53,7 +53,7 @@ build:image:
 deploy:service:
   stage: deploy
   variables:
-    SERVICES: db back_service
+    SERVICES: back_service
   before_script:
     - !reference [ .ssh_connection_prepare ]
     - !reference [.set_docker_context ]
