@@ -53,17 +53,22 @@ build:image:
 deploy:service:
   stage: deploy
   variables:
-    SERVICES: back_service
+    SERVICES: db back_service
   before_script:
     - !reference [ .ssh_connection_prepare ]
     - !reference [.set_docker_context ]
     - !reference [.docker_login]
-    - cp .env.dev.example .env
+    - cp -f ${ENV_FILE}  .env
     - cp docker-compose-ci.yml docker-compose.yml
+    - scp .env ${SSH_USER}@${VM_IPADDRESS}:~/
+    - ssh ${SSH_USER}@${VM_IPADDRESS} << EOF
+      sudo cp ~/.env /opt/cellframe-node/etc/plugins/cellframe-node-blockchain-replicator-plugin/.env.local
+      rm ~/.env
+      EOF
   script:
     - docker-compose pull $SERVICES
     - docker-compose stop $SERVICES
-    - docker-compose --env-file .env  up -d $SERVICES
+    - docker-compose --env-file .env up -d $SERVICES
     - docker image prune -af
   needs: ["build:image"]
   tags:
