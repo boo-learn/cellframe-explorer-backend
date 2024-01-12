@@ -69,6 +69,9 @@ deploy:service:
     - docker-compose stop $SERVICES
     - docker-compose --env-file .env up -d $SERVICES
     - docker image prune -af
+  after_script:
+    - sleep 10
+    - docker exec cellframe-node-explorer-backend-back_service-1 alembic upgrade head
   needs: ["build:image"]
   tags:
     - docker
