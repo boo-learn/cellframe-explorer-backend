@@ -9,6 +9,7 @@ def get_chain(session: Session, net_name: str, chain_name: str) -> models.Chain 
     return (
         session.execute(
             select(models.Chain)
+            .join(models.Chain.net)
             .where(
                 (models.Chain.name == chain_name) & (models.Net.name == net_name)
             )
