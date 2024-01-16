@@ -44,7 +44,7 @@ def block_list(query: QueryParams, session: Session):
         "net": net_name,
         "chain": chain_name,
         "blocks": to_dict(db_blocks, schema=serializers.Atom)
-    })
+    }, indent=4)
 
 
 # hhttp.add("block", workBlock.http_handler_block)

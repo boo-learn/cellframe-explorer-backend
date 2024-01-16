@@ -9,7 +9,7 @@ from ._common import get_atoms
 def get_events(
         session: Session, net_name: str, chain_name: str,
         limit: int = 10, offset: int = 0, reverse: bool = False) -> list[models.Block]:
-    return get_atoms("block", session, net_name, chain_name, limit, offset, reverse)
+    return get_atoms("event", session, net_name, chain_name, limit, offset, reverse)
 
 
 def get_event(session: Session, net_name:str, chain_name: str, event_hash: str) -> models.Event | None:
