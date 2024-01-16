@@ -5,8 +5,14 @@ from sqlalchemy.orm import Session
 
 
 def get_net_by_id(session: Session, id: int) -> models.Net | None:
-    return session.scalar(select(models.Net).where(models.Net.id == id))
+    query = (
+        select(models.Net).where(models.Net.id == id)
+    )
+    return session.execute(query).scalar_one_or_none()
 
 
 def get_net_by_name(session: Session, name: str) -> models.Net | None:
-    return session.scalar(select(models.Net).where(models.Net.name == name))
+    query = (
+        select(models.Net).where(models.Net.name == name)
+    )
+    return session.execute(query).scalar_one_or_none()

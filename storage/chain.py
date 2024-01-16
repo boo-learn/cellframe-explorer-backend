@@ -15,16 +15,4 @@ def get_chain(session: Session, net_name: str, chain_name: str) -> models.Chain 
             )
             # .join(models.Atom)
         )
-    ).scalar()
-
-# def get_chain(session: Session, net_name: str, chain_name: str) -> models.Chain | None:
-#     return (
-#         session.execute(
-#             select(models.Chain)
-#             .where(
-#                 (models.Chain.name == chain_name) & (models.Net.name == net_name)
-#             )
-#             .join(models.Atom)
-#         )
-#     ).scalar()
-
+    ).scalar_one_or_none()
