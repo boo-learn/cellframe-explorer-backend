@@ -198,7 +198,10 @@ class Transaction(BaseModel):
             ItemTypes.TX_ITEM_TYPE_OUT_EXT: obj.out_ext
         }
         for item in obj.sub_datum["items"]:
-            add_to[item['type']].append(item)
+            try:
+                add_to[item['type']].append(item)
+            except KeyError:
+                pass
         obj.token = obj.token[0] if obj.token else {"ticker": obj.sub_datum["ticker"]}
         return super().model_validate(*args, **kwargs)
 
