@@ -163,7 +163,7 @@ class TxOutExt(Item):
 class Transaction(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     hash: str
-    token: TxToken | None
+    token: TxToken | dict
     dateTime: datetime = Field(..., validation_alias="created_at", serialization_alias="dateTime")
     in_item: list[TxIn] = Field(..., validation_alias="in_", serialization_alias="in")
     out_ext: list[TxOutExt]
@@ -199,7 +199,7 @@ class Transaction(BaseModel):
         }
         for item in obj.sub_datum["items"]:
             add_to[item['type']].append(item)
-        obj.token = obj.token[0] if obj.token else None
+        obj.token = obj.token[0] if obj.token else {"ticker": obj.sub_datum["ticker"]}
         return super().model_validate(*args, **kwargs)
 
 
