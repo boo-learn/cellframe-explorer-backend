@@ -141,8 +141,8 @@ class TxSig(Item):
 
 class TxToken(Item):
     ticker: str
-    emission_hash: str
-    emission_chain_id: str
+    emissionHash: str = Field(validation_alias="emission_hash", serialization_alias="emissionHash")
+    emissionChainId: str = Field(validation_alias="emission_chain_id", serialization_alias="emissionChainId")
 
 
 class TxOutCondSubTypeSrvStakeLock(Item):
@@ -155,23 +155,24 @@ class TxOutCondSubTypeSrvStakeLock(Item):
         return date_format(date)
 
 
+class TxOutExt(Item):
+    pass
+
+
 # tx
 class Transaction(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     hash: str
-    token: dict = Field(..., validation_alias="sub_datum", serialization_alias="token")
+    token: TxToken | None
     dateTime: datetime = Field(..., validation_alias="created_at", serialization_alias="dateTime")
     in_item: list[TxIn] = Field(..., validation_alias="in_", serialization_alias="in")
-    # = Field(alias="in")
+    out_ext: list[TxOutExt]
     out: list[TxOut]
     out_cond: list[TxOutCond]
     sig: list[TxSig]
     # token: list[TxToken]
     out_cond_srv_stake_lock: list[TxOutCondSubTypeSrvStakeLock]
 
-    @field_validator("token", mode="before")
-    def get_ticker(cls, sub_datum: dict):
-        return {"ticker": sub_datum["ticker"]}
 
     @field_validator("dateTime")
     def date_format(cls, date: datetime):
@@ -186,6 +187,7 @@ class Transaction(BaseModel):
         obj.sig = []
         obj.token = []
         obj.out_cond_srv_stake_lock = []
+        obj.out_ext = []
         add_to = {
             ItemTypes.TX_ITEM_TYPE_IN: obj.in_,
             ItemTypes.TX_ITEM_TYPE_OUT: obj.out,
@@ -193,9 +195,11 @@ class Transaction(BaseModel):
             ItemTypes.TX_ITEM_TYPE_SIG: obj.sig,
             ItemTypes.TX_ITEM_TYPE_IN_EMS: obj.token,
             ItemTypes.DAP_CHAIN_TX_OUT_COND_SUBTYPE_SRV_STAKE_LOCK: obj.out_cond_srv_stake_lock,
+            ItemTypes.TX_ITEM_TYPE_OUT_EXT: obj.out_ext
         }
         for item in obj.sub_datum["items"]:
             add_to[item['type']].append(item)
+        obj.token = obj.token[0] if obj.token else None
         return super().model_validate(*args, **kwargs)
 
 

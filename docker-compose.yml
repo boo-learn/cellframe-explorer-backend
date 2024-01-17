@@ -28,11 +28,11 @@ services:
       context: .
       dockerfile: DockerfileBackService
     environment:
-      - DB_HOST='test-db'
+      - DB_HOST=db
       - DB_PORT=5432
       - POSTGRES_USER=boo
       - POSTGRES_PASSWORD=boo_pass
-      - POSTGRES_DB=CellFrameTestDB
+      - POSTGRES_DB=CellFrameDB
     volumes:
       - ./endpoints:/app/endpoints
       - ./schemas:/app/schemas
