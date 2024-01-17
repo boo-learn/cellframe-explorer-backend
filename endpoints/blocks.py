@@ -25,7 +25,7 @@ def block_list(query: QueryParams, session: Session):
 
     count = int(query.get('count', DEFAULT_PAGE_SIZE))
     page = int(query.get('page', 1))
-    reverse = bool(query.get('reverse', None) and query.get('reverse') == 'true')
+    reverse = not (bool(query.get('reverse', None) and query.get('reverse') == 'true'))
 
     limit = count
     offset = (page - 1) * limit
