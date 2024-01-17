@@ -120,7 +120,7 @@ class TxIn(Item):
 
 
 class TxOut(Item):
-    address: str
+    address: str = Field(validation_alias="address", serialization_alias="addr")
     value: str
 
 
@@ -159,9 +159,9 @@ class TxOutCondSubTypeSrvStakeLock(Item):
 class Transaction(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     hash: str
-    token: dict = Field(..., alias="sub_datum")
-    dateTime: datetime = Field(..., alias="created_at")
-    in_: list[TxIn]
+    token: dict = Field(..., validation_alias="sub_datum", serialization_alias="token")
+    dateTime: datetime = Field(..., validation_alias="created_at", serialization_alias="dateTime")
+    in_item: list[TxIn] = Field(..., validation_alias="in_", serialization_alias="in")
     # = Field(alias="in")
     out: list[TxOut]
     out_cond: list[TxOutCond]
