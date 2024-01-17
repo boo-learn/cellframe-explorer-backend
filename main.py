@@ -8,10 +8,10 @@ from core.const import (
     OPEN_API_TITLE,
 )
 import endpoints
+from endpoints.normal import (
+    nets, chains, blocks
+)
 from core.version import __version__
-
-# FIXME: fix warnings
-warnings.filterwarnings("ignore", category=sqlalchemy.exc.SAWarning)
 
 app = FastAPI(
     title=OPEN_API_TITLE,
@@ -20,10 +20,14 @@ app = FastAPI(
     swagger_ui_parameters={"defaultModelsExpandDepth": -1},
 )
 
-app.include_router(endpoints.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
+
+app.include_router(endpoints.router)
+app.include_router(nets.router)
+app.include_router(chains.router)
+app.include_router(blocks.router)

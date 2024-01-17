@@ -16,6 +16,10 @@ def get_atoms(
     order = desc if reverse else asc
     # select model by subtype
     model = models.Block if subtype == "block" else models.Event
+    print(f"{db_chain.id=}")
+    print(f"{limit=}")
+    print(f"{offset=}")
+    print(f"{subtype=}")
     query = (
         select(model)
         .where(

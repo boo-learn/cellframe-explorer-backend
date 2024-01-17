@@ -34,9 +34,7 @@ services:
       - POSTGRES_PASSWORD=boo_pass
       - POSTGRES_DB=CellFrameDB
     volumes:
-      - ./endpoints:/app/endpoints
-      - ./schemas:/app/schemas
-      - ./storage:/app/storage
+      - .:/app
     ports:
       - "8000:8000"
     depends_on:
