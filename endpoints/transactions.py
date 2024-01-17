@@ -20,8 +20,8 @@ def tx_list_limited(query: QueryParams, session: Session):
 
     count = int(query.get('count', DEFAULT_PAGE_SIZE))
     page = int(query.get('page', 1))
-    reverse = bool(query.get('reverse', None) and query.get('reverse') == 'true')
-
+    reverse = not (bool(query.get('reverse', None) and query.get('reverse') == 'old'))
+    print(reverse)
     limit = count
     offset = (page - 1) * limit
 
@@ -78,4 +78,4 @@ def get_datum_tx(query: QueryParams, session: Session):
             "error": f"Can't items for transaction with hash: {hash}"
         })
 
-    return serializers.Transaction.model_validate(datum_tx).model_dump_json(indent=4)
+    return serializers.Transaction.model_validate(datum_tx).model_dump_json(indent=4, by_alias=True)
