@@ -16,7 +16,7 @@ RUN pip install -U pip && \
     pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Copy all into the container at /app
-COPY . /app
+#COPY . /app
 
 EXPOSE 8000
 
