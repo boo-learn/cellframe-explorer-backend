@@ -23,8 +23,10 @@ def get_wallet(query: QueryParams, session: Session):
                 "msg": f"Invalid address {address}"
             }
         }, indent=4)
-
-    wallet = storage.wallet.get_wallet_by_address(session, address)
+    net = storage.net.get_net_by_name(session, name=net_name)
+    if net is None:
+        raise HTTPException(status_code=404, detail=f"Net with name={net_name} not found")
+    wallet = storage.wallet.get_wallet_by_address(session, address, net)
     if wallet is None:
         raise HTTPException(status_code=404, detail=f"Wallet with address={address} not found")
     wallet_schema = serializers.Wallet.model_validate(wallet)
