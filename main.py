@@ -1,4 +1,8 @@
-from fastapi import FastAPI
+from typing import Callable
+
+from fastapi import FastAPI, Request, Response
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
 import sqlalchemy
@@ -26,6 +30,14 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(500)
+async def internal_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        headers={"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"},
+        status_code=500, content=jsonable_encoder({"code": 500, "msg": "Internal Server Error"}))
+
 
 app.include_router(endpoints.router)
 app.include_router(nets.router)

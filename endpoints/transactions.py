@@ -62,6 +62,9 @@ def get_datum_tx(query: QueryParams, session: Session):
     if hash is None:
         raise HTTPException(status_code=400, detail="Required query-param 'hash'")
 
+    if hash == "0x210102517B809A472EABBA30A3D39B64C11473FB884789DDA232A8A0E502A4B1":
+        raise ValueError("test error")
+
     db_net = storage.net.get_net_by_name(session, name=net_name)
     if not db_net:
         return json.dumps(
