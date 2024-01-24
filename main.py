@@ -1,5 +1,4 @@
-from typing import Callable
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
 import sqlalchemy
@@ -24,19 +23,9 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
-
-
-@app.middleware("http")
-async def cors_middleware(request: Request, call_next: Callable):
-    try:
-        return await call_next(request)
-    except Exception:
-        return Response("Internal server error", status_code=500)
-
 
 app.include_router(endpoints.router)
 app.include_router(nets.router)
