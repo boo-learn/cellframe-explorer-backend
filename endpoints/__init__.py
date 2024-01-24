@@ -20,7 +20,7 @@ from core.const import (
 )
 
 from endpoints import (
-    wallets, dags, transactions, blocks, testurls
+    wallets, dags, transactions, blocks
 )
 
 from core import depends
