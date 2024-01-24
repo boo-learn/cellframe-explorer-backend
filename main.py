@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from typing import Callable
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import warnings
 import sqlalchemy
@@ -26,6 +27,14 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def cors_middleware(request: Request, call_next: Callable):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
 
 app.include_router(endpoints.router)
 app.include_router(nets.router)
