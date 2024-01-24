@@ -20,7 +20,7 @@ from core.const import (
 )
 
 from endpoints import (
-    wallets, dags, transactions, blocks
+    wallets, dags, transactions, blocks, testurls
 )
 
 from core import depends
@@ -45,6 +45,7 @@ def get_query_handler(query: QueryParams, session: Session):
         "blockListLimited": blocks.block_list,
         "blockListCount": dags.dag_list_count,  # Yes, It's duplicate
         "block": blocks.get_block,
+        "test-500": testurls.error_500,
     }
     try:
         handler = handlers[method]
