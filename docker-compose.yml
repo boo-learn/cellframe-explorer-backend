@@ -11,8 +11,10 @@ services:
       - postgres_data1:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - mynet2
 
-  test-db:
+  test_db:
     image: postgres
     environment:
       - POSTGRES_USER=boo
@@ -22,6 +24,8 @@ services:
       - postgres_data2:/var/lib/postgresql/data
     ports:
       - "5434:5432"
+    networks:
+      - mynet2
 
   back_service:
     build:
@@ -53,3 +57,8 @@ services:
 volumes:
   postgres_data1:
   postgres_data2:
+
+networks:
+  mynet2:
+    external:
+      name: my_custom_network

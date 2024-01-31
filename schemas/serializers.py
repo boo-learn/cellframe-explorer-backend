@@ -215,16 +215,16 @@ class Event(BaseModel):
     chain_id: int
     created: str = Field(..., alias="created_at")
     hashes: list[str]
-    datum: Datum = Field(..., alias="datums")
+    datums: list[Datum]
     signs: list[dict]
 
     @field_validator("created", mode="before")
     def date_format(cls, date: datetime, fields):
         return date_format(date)
 
-    @field_validator("datum", mode="before")
-    def one_datum(cls, datums: list):
-        return datums[0]
+    # @field_validator("datum", mode="before")
+    # def one_datum(cls, datums: list):
+    #     return datums[0]
 
 
 class Block(BaseModel):
