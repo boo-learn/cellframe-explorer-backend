@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, field_validator
 from pydantic import Field
 
-from shared.types import DatumTypes, ItemTypes
+from pycfhelpers.common.types import DatumTypes, ItemTypes
 
 
 def date_format(date: datetime) -> str:

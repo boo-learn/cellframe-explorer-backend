@@ -2,7 +2,7 @@ from sqlalchemy import select, func, desc, asc, cast
 from sqlalchemy.orm import Session
 
 from shared.database import models
-from shared.types import DatumTypes
+from pycfhelpers.common.types import DatumTypes
 
 from .chain import get_chain
 

@@ -3,12 +3,9 @@ import json
 from starlette.datastructures import QueryParams
 from sqlalchemy.orm import Session
 from fastapi.exceptions import HTTPException
-from pydantic import TypeAdapter
 
 from schemas import serializers
 import storage
-from shared.database import models
-from shared.types import ChainTypes
 from tools.helpers import to_dict, to_json
 
 

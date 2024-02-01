@@ -4,7 +4,7 @@ from starlette.datastructures import QueryParams
 from sqlalchemy.orm import Session
 from fastapi.exceptions import HTTPException
 
-from shared.types import ChainTypes
+from pycfhelpers.common.types import ChainTypes
 from schemas import serializers
 import storage
 
